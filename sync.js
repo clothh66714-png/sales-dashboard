@@ -23,11 +23,11 @@ nameMap: {
     'Wei':    'Wei',
     'Johnny': 'Johnny',
     'Jason':  'Jason',
-    '微碧北區業務-黃柏皓': 'Harry',
-    '微碧北區業務-黃建銘': 'Jack',
-    '微碧北區業務-陳威旼': 'Wei',
-    '微碧桃區業務-趙子儀': 'Johnny',
-    '微碧桃區業務-蔣宇倢': 'Jason',
+'黃柏皓': 'Harry',
+'黃建銘': 'Jack',
+'陳威旼': 'Wei',
+'趙子儀': 'Johnny',
+'蔣宇倢': 'Jason',
   },
 };
 function fetchJson(url, headers = {}) {
