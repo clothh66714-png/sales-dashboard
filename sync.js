@@ -17,12 +17,17 @@ const CFG = {
     dateField: process.env.RAGIC_DATE_FIELD || '安裝/結案日',
     server: process.env.RAGIC_SERVER || 'ap5',
   },
-  nameMap: {
-    'Harry': 'Harry',
-    'jack': 'Jack',
-    'Wei': 'Wei',
+nameMap: {
+    'Harry':  'Harry',
+    'jack':   'Jack',
+    'Wei':    'Wei',
     'Johnny': 'Johnny',
-    'Jason': 'Jason',
+    'Jason':  'Jason',
+    '微碧北區業務-黃柏皓': 'Harry',
+    '微碧北區業務-黃建銘': 'Jack',
+    '微碧北區業務-陳威旼': 'Wei',
+    '微碧桃區業務-趙子儀': 'Johnny',
+    '微碧桃區業務-蔣宇倢': 'Jason',
   },
 };
 function fetchJson(url, headers = {}) {
