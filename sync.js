@@ -85,6 +85,7 @@ async function fetchRagic() {
   console.log('撈取 Ragic...');
   const url = `https://${CFG.ragic.server}.ragic.com/${accountName}${sheetPath}?api&v=3&APIKey=${apiKey}&limit=-1`;
   const res = await fetchJson(url);
+  const entries = Object.entries(res); if (entries.length > 0) { console.log('Ragic第一筆:', JSON.stringify(entries[0][1]).slice(0, 800)); }
   const result = {};
   for (const [id, record] of Object.entries(res)) {
     if (id.startsWith('_')) continue;
