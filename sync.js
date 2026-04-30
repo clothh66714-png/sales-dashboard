@@ -19,22 +19,21 @@ const CFG = {
     hqKeywords: ['總部分店'],
   },
   ragic: {
-    apiKey:      process.env.RAGIC_API_KEY  || '',
-    accountName: process.env.RAGIC_ACCOUNT  || 'weibyapps',
-    sheetPath:   process.env.RAGIC_SHEET_PATH || '/forms4/7',
+    apiKey:      process.env.RAGIC_API_KEY      || '',
+    accountName: process.env.RAGIC_ACCOUNT      || 'weibyapps',
+    sheetPath:   process.env.RAGIC_SHEET_PATH   || '/forms4/7',
     dealerField: process.env.RAGIC_DEALER_FIELD || '負責業務',
     dateField:   process.env.RAGIC_DATE_FIELD   || '安裝/結案日',
-    server:      process.env.RAGIC_SERVER       || 'ap5',
+    server:      process.env.RAGIC_SERVER        || 'ap5',  // 你們是 ap5
   },
   // Asana assignee 全名 → 儀表板名稱
-  // 請依實際情況修改（Asana 顯示的是完整名字）
- nameMap: {
-    'Harry / Sales':  'Harry',
-    'Wei/Sales':      'Wei',
-    'jack/Sales':     'Jack',
-    'Johnny / Sales': 'Johnny',
-    'Jason/Sales':    'Jason',
-  },
+  // 用包含比對，所以只要名字含這些字就會對應
+  nameMap: {
+    'Harry':   'Harry',
+    'jack':    'Jack',
+    'Wei':     'Wei',
+    'Johnny':  'Johnny',
+    'Jason':   'Jason',
   },
 };
 
@@ -132,7 +131,7 @@ async function fetchRagic() {
   }
 
   console.log('📥 撈取 Ragic 資料...');
-  const url = `https://ap7.ragic.com/${accountName}${sheetPath}?api&v=3&APIKey=${apiKey}&limit=-1`;
+  const url = `https://${CFG.ragic.server}.ragic.com/${accountName}${sheetPath}?api&v=3&APIKey=${apiKey}&limit=-1`;
   const res = await fetchJson(url);
 
   // result[personName][monthLabel] = dealCount
