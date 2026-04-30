@@ -19,20 +19,22 @@ const CFG = {
     hqKeywords: ['總部分店'],
   },
   ragic: {
-    apiKey:      process.env.RAGIC_API_KEY      || '',
-    accountName: process.env.RAGIC_ACCOUNT      || '',
-    sheetPath:   process.env.RAGIC_SHEET_PATH   || '',
-    dealerField: process.env.RAGIC_DEALER_FIELD || '業務',
-    dateField:   process.env.RAGIC_DATE_FIELD   || '安裝日期',
+    apiKey:      process.env.RAGIC_API_KEY  || '',
+    accountName: process.env.RAGIC_ACCOUNT  || 'weibyapps',
+    sheetPath:   process.env.RAGIC_SHEET_PATH || '/forms4/7',
+    dealerField: process.env.RAGIC_DEALER_FIELD || '負責業務',
+    dateField:   process.env.RAGIC_DATE_FIELD   || '安裝/結案日',
+    server:      process.env.RAGIC_SERVER       || 'ap5',
   },
   // Asana assignee 全名 → 儀表板名稱
   // 請依實際情況修改（Asana 顯示的是完整名字）
-  nameMap: {
-    'Harry':  'Harry',
-    'Wei':    'Wei',
-    'Jack':   'Jack',
-    'Johnny': 'Johnny',
-    'Jason':  'Jason',
+ nameMap: {
+    'Harry / Sales':  'Harry',
+    'Wei/Sales':      'Wei',
+    'jack/Sales':     'Jack',
+    'Johnny / Sales': 'Johnny',
+    'Jason/Sales':    'Jason',
+  },
   },
 };
 
