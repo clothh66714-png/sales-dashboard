@@ -1,0 +1,39 @@
+name: 每日業績同步
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 取出程式碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 執行同步腳本
+        env:
+          ASANA_TOKEN: ${{ secrets.ASANA_TOKEN }}
+          ASANA_PROJECT_ID_NORTH: ${{ secrets.ASANA_PROJECT_ID_NORTH }}
+          ASANA_PROJECT_ID_TAOYUAN: ${{ secrets.ASANA_PROJECT_ID_TAOYUAN }}
+          RAGIC_API_KEY: ${{ secrets.RAGIC_API_KEY }}
+          RAGIC_SERVER: ${{ secrets.RAGIC_SERVER }}
+          RAGIC_ACCOUNT: ${{ secrets.RAGIC_ACCOUNT }}
+        run: node sync.js
+
+      - name: 推回更新後的 data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "自動同步：$(date '+%Y-%m-%d %H:%M') TST"
+          git push
