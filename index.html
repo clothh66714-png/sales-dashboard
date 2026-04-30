@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務業績儀表板</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--s2:#eeece7;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);
+  --text:#1a1917;--t2:#6b6860;--t3:#a09e98;
+  --blue:#2d6be4;--blue-l:#e8effe;
+  --green:#1a8a5a;--green-l:#e3f5ec;
+  --amber:#c47d0e;--amber-l:#fef3dd;
+  --purple:#6d3fcd;--purple-l:#f0ebff;
+  --teal:#0f7490;--teal-l:#e0f4f8;
+  --coral:#c43d3d;--coral-l:#fdeaea;
+  --r:12px;--rs:8px;
+}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;}
+
+/* ── Header ── */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+.logo{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.dot{width:8px;height:8px;background:var(--blue);border-radius:50%;}
+.hdr{display:flex;align-items:center;gap:14px;}
+.hmeta{font-size:12px;color:var(--t3);font-family:'DM Mono',monospace;}
+.si{font-size:11px;font-family:'DM Mono',monospace;color:var(--green);opacity:0;transition:opacity .5s;}
+.si.show{opacity:1;}
+
+/* ── Page ── */
+.page{max-width:1200px;margin:0 auto;padding:32px 24px;}
+.ptitle{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;}
+.psub{font-size:13px;color:var(--t3);margin-bottom:28px;}
+
+/* ── Controls ── */
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;align-items:center;}
+.cg{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:3px;align-items:center;}
+.cg>label{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;padding:0 10px 0 6px;border-right:1px solid var(--border);margin-right:3px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+button.ctrl{font-size:12px;font-family:'Noto Sans TC',sans-serif;padding:5px 12px;border-radius:6px;border:none;background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;font-weight:500;white-space:nowrap;}
+button.ctrl:hover{background:var(--s2);color:var(--text);}
+button.ctrl.on{background:var(--text);color:#fff;font-weight:700;}
+button.ctrl.on.g{background:var(--green);}
+button.ctrl.on.b{background:var(--blue);}
+button.ctrl.on.p{background:var(--purple);}
+button.ctrl.on.a{background:var(--amber);}
+button.ctrl.on.t{background:var(--teal);}
+
+/* ── Panels ── */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-bottom:24px;display:none;}
+.panel.open{display:block;}
+.ph{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.pttl{font-size:13px;font-weight:700;color:var(--t2);}
+.ptag{font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
+.ptag.b{background:var(--blue-l);color:var(--blue);}
+.ptag.a{background:var(--amber-l);color:var(--amber);}
+.ptag.p{background:var(--purple-l);color:var(--purple);}
+.ptag.t{background:var(--teal-l);color:var(--teal);}
+.pdiv{border:none;border-top:1px solid var(--border);margin:8px 0 12px;}
+
+/* ── Panel grid helpers ── */
+.pg{display:grid;gap:7px;align-items:center;margin-bottom:5px;}
+.pname{font-size:13px;font-weight:700;color:var(--text);display:flex;flex-direction:column;gap:1px;}
+.pregion{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;font-weight:400;}
+.mlbl{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;text-align:center;}
+.rlbl{font-size:11px;color:var(--t2);font-weight:500;text-align:right;padding-right:6px;}
+input.ni{font-size:13px;font-family:'DM Mono',monospace;font-weight:500;padding:5px 4px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg);color:var(--text);text-align:center;width:100%;transition:border-color .15s,background .15s;}
+input.ni:focus{outline:none;}
+input.ni.v:focus{border-color:var(--blue);background:var(--blue-l);}
+input.ni.d:focus{border-color:var(--green);background:var(--green-l);}
+input.ni.c:focus{border-color:var(--teal);background:var(--teal-l);}
+input.ni.cd:focus{border-color:var(--purple);background:var(--purple-l);}
+input.ni.hq:focus{border-color:var(--amber);background:var(--amber-l);}
+input.ni.kd:focus{border-color:var(--green);background:var(--green-l);}
+input.ni.wt:focus{border-color:var(--purple);background:var(--purple-l);}
+input.ni.wa:focus{border-color:var(--coral);background:var(--coral-l);}
+input.txt{font-size:13px;font-family:'Noto Sans TC',sans-serif;font-weight:500;padding:5px 8px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg);color:var(--text);width:100%;transition:border-color .15s;}
+input.txt:focus{outline:none;border-color:var(--purple);background:var(--purple-l);}
+
+/* add-row buttons */
+.add-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;cursor:pointer;border:1px dashed;border-radius:var(--rs);padding:5px 12px;transition:all .15s;margin-top:8px;}
+.add-btn.blue{color:var(--blue);border-color:var(--blue);background:var(--blue-l);}
+.add-btn.blue:hover{background:var(--blue);color:#fff;}
+.add-btn.purple{color:var(--purple);border-color:var(--purple);background:var(--purple-l);}
+.add-btn.purple:hover{background:var(--purple);color:#fff;}
+.del-btn{font-size:11px;color:var(--coral);background:var(--coral-l);border:none;border-radius:4px;padding:2px 7px;cursor:pointer;font-family:'DM Mono',monospace;font-weight:700;}
+.del-btn:hover{background:var(--coral);color:#fff;}
+
+/* ── Region ── */
+.rb{margin-bottom:28px;}
+.rh{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-family:'DM Mono',monospace;}
+.rline{flex:1;height:1px;background:var(--border);}
+
+/* ── Cards ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;}
+.card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.ca{position:absolute;top:0;left:0;right:0;height:3px;}
+.cn{font-size:14px;font-weight:700;margin:6px 0 10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:3px;}
+.hqb{font-size:10px;font-family:'DM Mono',monospace;font-weight:500;background:var(--amber-l);color:var(--amber);padding:1px 5px;border-radius:4px;}
+
+/* stats grid */
+.cstats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.cs{text-align:center;padding:7px 3px;}
+.cs+.cs{border-left:1px solid var(--border);}
+.csv{font-size:17px;font-weight:500;font-family:'DM Mono',monospace;line-height:1;margin-bottom:2px;}
+.csl{font-size:9px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;}
+
+/* rate tags */
+.rates{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.cr{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:5px;display:inline-flex;align-items:center;gap:3px;}
+.cr.north{background:var(--blue-l);color:var(--blue);}
+.cr.south{background:var(--green-l);color:var(--green);}
+.cr.cold{background:var(--teal-l);color:var(--teal);}
+
+/* KPI rows inside card */
+.kpi-section{display:flex;flex-direction:column;gap:6px;margin-top:2px;}
+.kpi-item{display:flex;flex-direction:column;gap:3px;}
+.kpi-header{display:flex;justify-content:space-between;align-items:center;}
+.kpi-name{font-size:10px;color:var(--t2);font-weight:500;}
+.kpi-val{font-size:10px;font-family:'DM Mono',monospace;font-weight:700;}
+.kbar-wrap{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;}
+.kbar{height:100%;border-radius:3px;transition:width .4s;}
+
+/* ── Chart ── */
+.chart-sec{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;}
+.ctop{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.ctitle{font-size:13px;font-weight:700;color:var(--t2);}
+.legend{display:flex;flex-wrap:wrap;gap:12px;}
+.li{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--t2);}
+.ll{width:18px;height:2px;border-radius:1px;flex-shrink:0;}
+.cw{position:relative;width:100%;height:280px;}
+
+/* ── Weighted KPI section header ── */
+.wkpi-person-block{margin-bottom:4px;}
+.wkpi-item-row{display:grid;gap:7px;align-items:center;margin-bottom:4px;}
+
+footer{text-align:center;padding:28px 24px;font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;letter-spacing:.04em;}
+
+@media(max-width:640px){
+  .page{padding:16px;}
+  header{padding:0 16px;}
+  .cgrid{grid-template-columns:1fr 1fr;}
+  .cstats{grid-template-columns:repeat(2,1fr);}
+  .cstats .cs:nth-child(3){border-left:none;border-top:1px solid var(--border);}
+  .cstats .cs:nth-child(4){border-top:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="dot"></div>業績追蹤系統</div>
+  <div class="hdr">
+    <span class="si" id="si">✓ 已儲存</span>
+    <div class="hmeta" id="hm">2025</div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="ptitle">業務來客成交統計</div>
+  <div class="psub" id="psub">北區 × 桃區</div>
+
+  <div class="controls">
+    <div class="cg">
+      <label>檢視</label>
+      <button class="ctrl on" id="tab-both" onclick="switchTab('both')">來客＋成交</button>
+      <button class="ctrl" id="tab-visit" onclick="switchTab('visit')">來客數</button>
+      <button class="ctrl" id="tab-deal" onclick="switchTab('deal')">成交數</button>
+      <button class="ctrl" id="tab-rate" onclick="switchTab('rate')">成交率%</button>
+      <button class="ctrl" id="tab-cold" onclick="switchTab('cold')">陌生開發</button>
+    </div>
+    <div class="cg">
+      <label>月份</label>
+      <button class="ctrl on" id="mf-all" onclick="switchMonthFilter('all')">全部</button>
+      <div id="mf-btns" style="display:contents;"></div>
+    </div>
+    <div class="cg">
+      <label>總部</label>
+      <button class="ctrl on" id="mode-all" onclick="switchMode('all')">含總部</button>
+      <button class="ctrl g" id="mode-exc" onclick="switchMode('exc')">扣除總部</button>
+    </div>
+    <div class="cg">
+      <label>面板</label>
+      <button class="ctrl b" id="btn-edit" onclick="togglePanel('edit')">編輯資料</button>
+      <button class="ctrl a" id="btn-hq" onclick="togglePanel('hq')">總部設定</button>
+      <button class="ctrl p" id="btn-kpi" onclick="togglePanel('kpi')">成交KPI</button>
+      <button class="ctrl t" id="btn-wkpi" onclick="togglePanel('wkpi')">加權KPI</button>
+    </div>
+    <div class="cg">
+      <label>人員</label>
+      <button class="ctrl" id="btn-people" onclick="togglePanel('people')">管理業務</button>
+    </div>
+  </div>
+
+  <!-- EDIT PANEL -->
+  <div class="panel" id="edit-panel">
+    <div class="ph">
+      <div class="pttl">編輯業績資料</div>
+      <div class="ptag b">來客／成交／陌生開發</div>
+      <div class="ptag b" style="margin-left:auto;">自動儲存</div>
+    </div>
+    <div id="edit-body"></div>
+    <button class="add-btn blue" onclick="addMonth()">＋ 新增下一個月</button>
+  </div>
+
+  <!-- HQ PANEL -->
+  <div class="panel" id="hq-panel">
+    <div class="ph">
+      <div class="pttl">各業務每月總部間數</div>
+      <div class="ptag a">自動儲存</div>
+    </div>
+    <div id="hq-body"></div>
+  </div>
+
+  <!-- DEAL KPI PANEL -->
+  <div class="panel" id="kpi-panel">
+    <div class="ph">
+      <div class="pttl">成交 KPI 目標</div>
+      <div class="ptag p">每月設定目標成交數</div>
+      <div class="ptag p" style="margin-left:auto;">自動儲存</div>
+    </div>
+    <p style="font-size:12px;color:var(--t3);margin-bottom:14px;">填入每位業務每個月的目標成交數，卡片上會顯示達成進度條。</p>
+    <div id="kpi-body"></div>
+  </div>
+
+  <!-- WEIGHTED KPI PANEL -->
+  <div class="panel" id="wkpi-panel">
+    <div class="ph">
+      <div class="pttl">加權 KPI</div>
+      <div class="ptag t">自訂項目，每月填目標與達成</div>
+      <div class="ptag t" style="margin-left:auto;">自動儲存</div>
+    </div>
+    <p style="font-size:12px;color:var(--t3);margin-bottom:14px;">每位業務各自管理自己的加權KPI項目，點各人底下的「＋ 新增項目」新增，每月填入目標與達成數，系統自動計算達成率。</p>
+    <div id="wkpi-body"></div>
+  </div>
+
+  <!-- PEOPLE PANEL -->
+  <div class="panel" id="people-panel">
+    <div class="ph">
+      <div class="pttl">業務人員管理</div>
+      <div class="ptag b">新增或刪除業務</div>
+      <div class="ptag b" style="margin-left:auto;">自動儲存</div>
+    </div>
+    <div id="people-body"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:11px;font-weight:700;color:var(--t2);">姓名</label>
+        <input id="new-person-name" class="txt" style="max-width:140px;" placeholder="例：Mike" oninput="validateNewPerson()">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:11px;font-weight:700;color:var(--t2);">區域</label>
+        <select id="new-person-region" style="font-size:13px;font-family:'Noto Sans TC',sans-serif;font-weight:500;padding:5px 10px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg);color:var(--text);">
+          <option value="北">北區</option>
+          <option value="桃">桃區</option>
+        </select>
+      </div>
+      <button id="add-person-btn" onclick="addPerson()"
+        style="font-size:12px;font-family:'Noto Sans TC',sans-serif;font-weight:700;padding:6px 16px;border-radius:var(--rs);border:none;background:var(--blue);color:#fff;cursor:pointer;opacity:.4;pointer-events:none;transition:opacity .2s;">
+        ＋ 新增業務
+      </button>
+      <span id="add-person-hint" style="font-size:11px;color:var(--t3);"></span>
+    </div>
+  </div>
+
+  <!-- PEOPLE PANEL -->
+  <div class="panel" id="people-panel">
+    <div class="ph">
+      <div class="pttl">業務人員管理</div>
+      <div class="ptag b">新增或刪除業務</div>
+      <div class="ptag b" style="margin-left:auto;">自動儲存</div>
+    </div>
+    <div id="people-body"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:11px;font-weight:700;color:var(--t2);">姓名</label>
+        <input id="new-person-name" class="txt" style="max-width:140px;" placeholder="例：Mike" oninput="validateNewPerson()">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:11px;font-weight:700;color:var(--t2);">區域</label>
+        <select id="new-person-region" style="font-size:13px;font-family:'Noto Sans TC',sans-serif;font-weight:500;padding:5px 10px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--bg);color:var(--text);">
+          <option value="北">北區</option>
+          <option value="桃">桃區</option>
+        </select>
+      </div>
+      <button id="add-person-btn" onclick="addPerson()"
+        style="font-size:12px;font-family:'Noto Sans TC',sans-serif;font-weight:700;padding:6px 16px;border-radius:var(--rs);border:none;background:var(--blue);color:#fff;cursor:pointer;opacity:.4;pointer-events:none;transition:opacity .2s;">
+        ＋ 新增業務
+      </button>
+      <span id="add-person-hint" style="font-size:11px;color:var(--t3);"></span>
+    </div>
+  </div>
+
+  <!-- REGION CARDS (動態產生) -->
+  <div id="region-cards-container"></div>
+
+  <!-- CHART -->
+  <div class="chart-sec">
+    <div class="ctop">
+      <div class="ctitle" id="ctitle">來客數趨勢</div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="cw"><canvas id="mainChart" role="img" aria-label="業務趨勢折線圖">業務趨勢圖</canvas></div>
+  </div>
+</div>
+
+<footer>POS 業務管理系統 &nbsp;·&nbsp; 資料儲存於本機瀏覽器</footer>
+
+<script>
+/* ─────────────── constants ─────────────── */
+// 顏色池 & 線段樣式池（新增業務時自動分配）
+const COLOR_POOL = ['#2d6be4','#1a8a5a','#7b5ea7','#c47d0e','#c43d3d','#0f7490','#94b4f0','#3db87a','#d4537e','#6b6860'];
+const DASH_POOL  = [[],[6,3],[2,4],[8,4,2,4],[4,2],[6,2],[10,3],[3,3]];
+// 動態從 S.people 產生（每次存取都是最新）
+function getColor(name){ const i=S.people.findIndex(p=>p.name===name); return COLOR_POOL[i % COLOR_POOL.length]; }
+function getDash(name){  const i=S.people.findIndex(p=>p.name===name); return DASH_POOL[i  % DASH_POOL.length];  }
+// 相容舊寫法
+const NAMES = [];  // 不再使用硬編碼，改用 S.people.map(p=>p.name)
+
+const DEF_MONTHS = ['1月','2月','3月','4月'];
+const DEF_PEOPLE = [
+  {name:'Harry', region:'北', visits:[18,10,31,22], deals:[5,4,16,10],  cold:[3,2,8,5],  coldDeals:[1,1,4,2]},
+  {name:'Wei',   region:'北', visits:[23,14,38,27], deals:[7,6,12,9],   cold:[5,3,9,6],  coldDeals:[2,1,3,2]},
+  {name:'Jack',  region:'北', visits:[22,17,37,28], deals:[6,5,7,7],    cold:[4,4,8,7],  coldDeals:[1,1,2,1]},
+  {name:'Johnny',region:'桃', visits:[22,9,34,17],  deals:[9,6,10,6],   cold:[6,2,7,4],  coldDeals:[3,1,3,2]},
+  {name:'Jason', region:'桃', visits:[17,14,36,21], deals:[6,6,7,8],    cold:[3,3,8,5],  coldDeals:[1,2,2,2]},
+];
+const mk0 = () => (typeof S !== 'undefined' ? S.people : DEF_PEOPLE).reduce((o,p)=>{o[p.name]=new Array(DEF_MONTHS.length).fill(0);return o;},{});
+
+/* wkpi structure: [{id, name, data:{Harry:[{target,actual},...], ...}}] */
+const DEF_WKPI = [];
+
+/* ─────────────── state ─────────────── */
+function load(){
+  try{
+    const mc = (JSON.parse(localStorage.getItem('pos_months')||'null')||DEF_MONTHS).length;
+    const people = JSON.parse(localStorage.getItem('pos_people')||'null') || JSON.parse(JSON.stringify(DEF_PEOPLE));
+    const hq  = JSON.parse(localStorage.getItem('pos_hq') ||'null') || mk0();
+    const kpiRaw = JSON.parse(localStorage.getItem('pos_kpi')||'null');
+    // 確保 kpi 永遠是陣列（舊版本可能存成物件）
+    const kpi = Array.isArray(kpiRaw) ? kpiRaw : new Array((JSON.parse(localStorage.getItem('pos_months')||'null')||DEF_MONTHS).length).fill(0);
+    const wkpi= JSON.parse(localStorage.getItem('pos_wkpi')||'null') || {};
+    const months = JSON.parse(localStorage.getItem('pos_months')||'null') || [...DEF_MONTHS];
+    return {months,people,hq,kpi,wkpi};
+  } catch(e){
+    return {months:[...DEF_MONTHS],people:JSON.parse(JSON.stringify(DEF_PEOPLE)),hq:mk0(),kpi:[0,0,0,0],wkpi:{}};
+  }
+}
+const S = load();
+// 自動修復：如果 kpi 被存成物件（舊 bug），重設為正確長度的陣列
+if (!Array.isArray(S.kpi)) {
+  S.kpi = new Array(S.months.length).fill(0);
+}
+// 確保 kpi 長度與月份一致
+while (S.kpi.length < S.months.length) S.kpi.push(0);
+let tab='both', viewMode='all', selectedMonth='all';
+const openPanels = new Set();
+
+function save(){
+  localStorage.setItem('pos_months',JSON.stringify(S.months));
+  localStorage.setItem('pos_people',JSON.stringify(S.people));
+  localStorage.setItem('pos_hq',    JSON.stringify(S.hq));
+  localStorage.setItem('pos_kpi',   JSON.stringify(S.kpi));
+  localStorage.setItem('pos_wkpi',  JSON.stringify(S.wkpi));
+  const el=document.getElementById('si');
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),2000);
+}
+
+/* ─────────────── month management ─────────────── */
+function addMonth(){
+  const last=S.months[S.months.length-1];
+  const num=parseInt(last);
+  const next=isNaN(num)?S.months.length+1:num+1;
+  S.months.push(next+'月');
+  S.people.forEach(p=>{p.visits.push(0);p.deals.push(0);p.cold.push(0);p.coldDeals.push(0);});
+  S.people.forEach(p=>{if(!S.hq[p.name])S.hq[p.name]=new Array(S.months.length-1).fill(0); S.hq[p.name].push(0);});
+  S.kpi.push(0);
+  S.wkpi && S.people.forEach(p=>{(S.wkpi[p.name]||[]).forEach(item=>{item.months.push({target:0,actual:0});});});
+  save(); rebuildAllPanels();
+}
+
+/* ─────────────── computed helpers ─────────────── */
+function adj(p,mi){
+  const h=viewMode==='exc'?(S.hq[p.name][mi]||0):0;
+  return{v:Math.max(0,p.visits[mi]-h),d:Math.max(0,p.deals[mi]-h)};
+}
+function totalAdj(p){
+  let tv=0,td=0;
+  S.months.forEach((_,mi)=>{
+    if(selectedMonth!=='all' && mi!==selectedMonth) return;
+    const a=adj(p,mi); tv+=a.v; td+=a.d;
+  });
+  return{v:tv,d:td};
+}
+function totalCold(p){
+  let c=0,cd=0;
+  S.months.forEach((_,mi)=>{
+    if(selectedMonth!=='all' && mi!==selectedMonth) return;
+    c+=p.cold[mi]||0; cd+=p.coldDeals[mi]||0;
+  });
+  return{c,cd};
+}
+function rate(d,v){return v===0?'—':(Math.round(d/v*1000)/10)+'%';}
+function kpiDeal(p){
+  const kpiSlice = selectedMonth==='all'
+    ? S.kpi
+    : [S.kpi[selectedMonth]||0];
+  const tot=kpiSlice.reduce((a,b)=>a+b,0);
+  if(!tot)return null;
+  const{d}=totalAdj(p);
+  return{pct:Math.round(d/tot*100),target:tot,actual:d};
+}
+/* kpiWeighted defined below in wkpi section */
+function barColor(pct){return pct>=100?'var(--green)':pct>=70?'var(--amber)':'var(--coral)';}
+
+/* ─────────────── col grid helper ─────────────── */
+function colDef(nameW){return`${nameW} repeat(${S.months.length},1fr)`;}
+
+/* ─────────────── BUILD: Edit Panel ─────────────── */
+function buildEdit(){
+  const cd=colDef('90px');
+  document.getElementById('edit-body').innerHTML=S.people.map((p,pi)=>`
+    ${pi>0?'<hr class="pdiv">':''}
+    <div style="margin-bottom:6px;">
+      <div class="pg" style="grid-template-columns:${cd};margin-bottom:4px;">
+        <div class="pname">${p.name}<span class="pregion">${p.region}區</span></div>
+        ${S.months.map(m=>`<div class="mlbl">${m}</div>`).join('')}
+      </div>
+      ${[['來客','v','visits'],['成交','d','deals'],['陌生來客','c','cold'],['陌生成交','cd','coldDeals']].map(([lbl,cls,key])=>`
+        <div class="pg" style="grid-template-columns:${cd};margin-bottom:3px;">
+          <div class="rlbl">${lbl}</div>
+          ${S.months.map((_,mi)=>`<input class="ni ${cls}" type="number" min="0" max="999" step="1" value="${p[key][mi]}" oninput="upField('${p.name}','${key}',${mi},this.value)">`).join('')}
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+function upField(name,key,mi,val){
+  const p=S.people.find(x=>x.name===name);
+  if(p){p[key][mi]=Math.max(0,parseInt(val)||0);save();buildCards();buildChart();}
+}
+
+/* ─────────────── BUILD: HQ Panel ─────────────── */
+function buildHq(){
+  const cd=colDef('90px');
+  document.getElementById('hq-body').innerHTML=S.people.map((p,pi)=>`
+    ${pi>0?'<hr class="pdiv">':''}
+    <div class="pg" style="grid-template-columns:${cd};margin-bottom:6px;">
+      <div class="pname">${p.name}<span class="pregion">${p.region}區</span></div>
+      ${S.months.map((m,mi)=>`
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div class="mlbl">${m}</div>
+          <input class="ni hq" type="number" min="0" max="99" step="1" value="${S.hq[p.name][mi]||0}" oninput="upHq('${p.name}',${mi},this.value)">
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+function upHq(n,mi,v){S.hq[n][mi]=Math.max(0,parseInt(v)||0);save();buildCards();buildChart();}
+
+/* ─────────────── BUILD: Deal KPI Panel ─────────────── */
+function buildKpi(){
+  const cd = colDef('120px');
+  const totalTarget = S.kpi.reduce((a,b)=>a+b,0);
+  let html = '<p style="font-size:12px;color:var(--t3);margin-bottom:14px;">設定每個月的統一目標成交數，所有業務共用同一個目標，卡片上各自顯示達成進度條。</p>';
+  html += '<div class="pg" style="grid-template-columns:'+cd+';margin-bottom:6px;">';
+  html += '<div class="pname" style="margin:0;">目標成交數<span class="pregion">所有業務共用</span></div>';
+  S.months.forEach(function(m,mi){
+    html += '<div style="display:flex;flex-direction:column;gap:3px;">';
+    html += '<div class="mlbl">'+m+'</div>';
+    html += '<input class="ni kd" type="number" min="0" max="999" step="1" value="'+(S.kpi[mi]||0)+'" oninput="upKpi('+mi+',this.value)">';
+    html += '</div>';
+  });
+  html += '</div>';
+  if(totalTarget>0){
+    html += '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">';
+    html += '<div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:10px;">各業務達成預覽</div>';
+    S.people.forEach(function(p){
+      var res=totalAdj(p); var d=res.d;
+      var pct=Math.round(d/totalTarget*100);
+      var bc=barColor(pct);
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">';
+      html += '<div style="font-size:12px;font-weight:700;width:60px;">'+p.name+'</div>';
+      html += '<div style="flex:1;height:6px;background:var(--s2);border-radius:3px;overflow:hidden;">';
+      html += '<div style="width:'+Math.min(pct,100)+'%;height:100%;border-radius:3px;background:'+bc+';transition:width .4s;"></div></div>';
+      html += '<div style="font-size:11px;font-family:DM Mono,monospace;font-weight:700;min-width:70px;color:'+bc+';">'+d+'/'+totalTarget+' ('+pct+'%)</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('kpi-body').innerHTML = html;
+}
+function upKpi(mi,v){S.kpi[mi]=Math.max(0,parseInt(v)||0);save();buildCards();/* kpi panel 不重建避免輸入被清除 */}
+
+/* ─────────────── BUILD: Weighted KPI Panel (per-person) ─────────────── */
+/*
+  S.wkpi = {
+    Harry: [{id, name, months:[{target,actual},...]}, ...],
+    Wei:   [...],  ...
+  }
+*/
+function wkpiEnsure(name){ if(!S.wkpi[name]) S.wkpi[name]=[]; }
+S.people.forEach(p=>wkpiEnsure(p.name));
+
+let wkpiIdSeq=(()=>{
+  let mx=0;
+  S.people.forEach(p=>(S.wkpi[p.name]||[]).forEach(x=>{if(x.id>mx)mx=x.id;}));
+  return mx+1;
+})();
+
+function addWkpiItem(pname){
+  wkpiEnsure(pname);
+  const id=wkpiIdSeq++;
+  S.wkpi[pname].push({id,name:'新項目',months:S.months.map(()=>({target:0,actual:0}))});
+  save(); buildWkpi(); buildCards();
+}
+function delWkpiItem(pname,id){
+  if(!S.wkpi[pname])return;
+  S.wkpi[pname]=S.wkpi[pname].filter(x=>x.id!==id);
+  save(); buildWkpi(); buildCards();
+}
+function upWkpiName(pname,id,val){
+  const item=(S.wkpi[pname]||[]).find(x=>x.id===id);
+  if(item){item.name=val||'項目';save();/* 不重建面板，保留輸入焦點 */}
+}
+function upWkpiVal(pname,id,mi,field,val){
+  const item=(S.wkpi[pname]||[]).find(x=>x.id===id);
+  if(item&&item.months[mi]){item.months[mi][field]=Math.max(0,parseInt(val)||0);save();buildCards();}
+  /* wkpi panel 不重建避免輸入被清除 */
+}
+function kpiWeighted(p){
+  return (S.wkpi[p.name]||[]).map(item=>{
+    const totT=item.months.reduce((a,r)=>a+(r.target||0),0);
+    const totA=item.months.reduce((a,r)=>a+(r.actual||0),0);
+    return{name:item.name,pct:totT?Math.round(totA/totT*100):null,target:totT,actual:totA};
+  });
+}
+
+function buildWkpi(){
+  const colW=`90px repeat(${S.months.length},1fr)`;
+  document.getElementById('wkpi-body').innerHTML=S.people.map((p,pi)=>{
+    const items=S.wkpi[p.name]||[];
+    const itemsHtml=items.length===0
+      ? `<p style="font-size:12px;color:var(--t3);padding:2px 0 8px;">尚無項目</p>`
+      : items.map(item=>`
+          <div style="background:var(--bg);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+              <span class="mlbl" style="font-size:11px;font-weight:700;color:var(--t2);">項目名稱</span>
+              <input class="txt" style="max-width:150px;" value="${item.name}" oninput="upWkpiName('${p.name}',${item.id},this.value)" placeholder="例：裝機數">
+              <button class="del-btn" onclick="delWkpiItem('${p.name}',${item.id})">✕ 刪除</button>
+            </div>
+            <div class="pg" style="grid-template-columns:${colW};margin-bottom:3px;">
+              <div></div>${S.months.map(m=>`<div class="mlbl">${m}</div>`).join('')}
+            </div>
+            <div class="pg" style="grid-template-columns:${colW};margin-bottom:3px;">
+              <div class="rlbl">目標</div>
+              ${S.months.map((_,mi)=>`<input class="ni wt" type="number" min="0" max="9999" step="1" value="${(item.months[mi]||{}).target||0}" oninput="upWkpiVal('${p.name}',${item.id},${mi},'target',this.value)">`).join('')}
+            </div>
+            <div class="pg" style="grid-template-columns:${colW};">
+              <div class="rlbl">達成</div>
+              ${S.months.map((_,mi)=>`<input class="ni wa" type="number" min="0" max="9999" step="1" value="${(item.months[mi]||{}).actual||0}" oninput="upWkpiVal('${p.name}',${item.id},${mi},'actual',this.value)">`).join('')}
+            </div>
+          </div>`).join('');
+    return `
+      ${pi>0?'<hr class="pdiv">':''}
+      <div style="margin-bottom:4px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div class="pname" style="margin:0;">${p.name}<span class="pregion">${p.region}區</span></div>
+          <button class="add-btn purple" style="margin:0;padding:4px 10px;font-size:11px;" onclick="addWkpiItem('${p.name}')">＋ 新增項目</button>
+        </div>
+        ${itemsHtml}
+      </div>`;
+  }).join('');
+}
+
+/* ─────────────── BUILD: Cards (delegate to buildRegionCards) ─────────────── */
+function zeros(n){ return new Array(n).fill(0); }
+function buildCards(){ buildRegionCards(); }
+
+/* ─────────────── BUILD: Chart ─────────────── */
+function getChartData(p){
+  if(tab==='visit') return S.months.map((_,mi)=>adj(p,mi).v);
+  if(tab==='deal')  return S.months.map((_,mi)=>adj(p,mi).d);
+  if(tab==='cold')  return S.months.map((_,mi)=>p.cold[mi]);
+  return S.months.map((_,mi)=>{const{v,d}=adj(p,mi);return v===0?0:Math.round(d/v*1000)/10;});
+}
+const CTITLES={visit:'來客數趨勢',deal:'成交數趨勢',both:'來客數 ＋ 成交數',cold:'陌生開發趨勢',rate:'成交率趨勢 (%)'};
+let chart=null;
+function buildChart(){
+  const isSingleMonth = selectedMonth !== 'all';
+  const isBoth = tab === 'both';
+  // both 模式用 bar 作基底（支援混合 line+bar）；單月也用 bar；其餘用 line
+  const chartType = (isBoth || isSingleMonth) ? 'bar' : 'line';
+  const labels = isSingleMonth ? [S.months[selectedMonth]] : S.months;
+  const titlePrefix = (viewMode==='exc'?'（扣除總部）':'') + (isSingleMonth ? S.months[selectedMonth]+' ' : '');
+  document.getElementById('ctitle').textContent = titlePrefix + CTITLES[tab];
+
+  let datasets;
+  if (isBoth) {
+    // B 方案：折線（來客）＋ 長條（成交）
+    // chart type 固定為 bar，折線用 type:'line' override
+    datasets = S.people.flatMap(p => {
+      const visitData = isSingleMonth
+        ? [S.months.map((_,mi)=>adj(p,mi).v)[selectedMonth]]
+        : S.months.map((_,mi)=>adj(p,mi).v);
+      const dealData = isSingleMonth
+        ? [S.months.map((_,mi)=>adj(p,mi).d)[selectedMonth]]
+        : S.months.map((_,mi)=>adj(p,mi).d);
+      const color = getColor(p.name);
+      return [
+        {
+          type: 'line',
+          label: p.name + ' 來客',
+          data: visitData,
+          borderColor: color,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 4, pointHoverRadius: 6,
+          pointBackgroundColor: color,
+          tension: 0.35,
+          order: 1,
+        },
+        {
+          type: 'bar',
+          label: p.name + ' 成交',
+          data: dealData,
+          backgroundColor: color + '99',
+          borderColor: color,
+          borderWidth: 0,
+          borderRadius: 4,
+          order: 2,
+        },
+      ];
+    });
+  } else {
+    datasets = S.people.map(p => {
+      const data = isSingleMonth
+        ? [getChartData(p)[selectedMonth]]
+        : getChartData(p);
+      return {
+        label: p.name, data,
+        borderColor: getColor(p.name),
+        backgroundColor: getColor(p.name) + (isSingleMonth ? 'cc' : '15'),
+        borderWidth: isSingleMonth ? 0 : 2,
+        pointRadius: 5, pointHoverRadius: 7,
+        pointBackgroundColor: getColor(p.name),
+        tension: 0.35,
+        borderDash: isSingleMonth ? [] : getDash(p.name),
+        borderRadius: isSingleMonth ? 6 : 0,
+      };
+    });
+  }
+
+  const yCallback = v => v + (tab==='rate'?'%':'');
+  const tooltipLabel = ctx => {
+    const unit = tab==='rate' ? '%' : '人';
+    return ` ${ctx.dataset.label}: ${ctx.parsed.y}${unit}`;
+  };
+
+  if (!chart) {
+    chart = new Chart(document.getElementById('mainChart'), {
+      type: chartType,
+      data: {labels, datasets},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: {display: false},
+          tooltip: {
+            mode: 'index', intersect: false,
+            backgroundColor:'#1a1917', titleColor:'#a09e98', bodyColor:'#f5f4f0', padding:12,
+            callbacks: {label: tooltipLabel}
+          }
+        },
+        scales: {
+          y: {beginAtZero:true, ticks:{callback:yCallback,font:{size:11},color:'#a09e98'}, grid:{color:'rgba(0,0,0,0.05)'}, border:{display:false}},
+          x: {ticks:{autoSkip:false,font:{size:12},color:'#6b6860'}, grid:{display:false}, border:{display:false}}
+        }
+      }
+    });
+  } else {
+    if (chart.config.type !== chartType) {
+      chart.destroy(); chart = null; buildChart(); return;
+    }
+    chart.data.labels = labels;
+    chart.data.datasets = datasets;
+    chart.options.scales.y.ticks.callback = yCallback;
+    chart.options.plugins.tooltip.callbacks.label = tooltipLabel;
+    chart.update();
+  }
+
+  // Legend：both 模式顯示折線（來客）+ 色塊（成交）說明
+  if (isBoth) {
+    document.getElementById('legend').innerHTML =
+      S.people.map(p => {
+        const c = getColor(p.name);
+        return `<span class="li">
+          <span style="display:inline-flex;align-items:center;gap:3px;">
+            <span style="width:14px;height:2px;background:${c};display:inline-block;border-radius:1px;"></span>
+            <span style="width:10px;height:10px;background:${c}99;display:inline-block;border-radius:2px;"></span>
+          </span>
+          ${p.name}
+        </span>`;
+      }).join('') +
+      `<span class="li" style="color:var(--t3);font-size:11px;">— 折線=來客　色塊=成交</span>`;
+  } else {
+    document.getElementById('legend').innerHTML = S.people.map(p => {
+      const s = getDash(p.name).length
+        ? `border-top:2px dashed ${getColor(p.name)};background:transparent;`
+        : `background:${getColor(p.name)};`;
+      return `<span class="li"><span class="ll" style="${s}"></span>${p.name}</span>`;
+    }).join('');
+  }
+}
+
+/* ─────────────── controls ─────────────── */
+function buildMonthFilterBtns(){
+  const container = document.getElementById('mf-btns');
+  if(!container) return;
+  container.innerHTML = S.months.map((m,mi)=>
+    `<button class="ctrl${selectedMonth===mi?' on':''}" onclick="switchMonthFilter(${mi})">${m}</button>`
+  ).join('');
+}
+function switchMonthFilter(val){
+  selectedMonth = val; // 'all' 或 數字 index
+  // 更新全部按鈕樣式
+  const allBtn = document.getElementById('mf-all');
+  if(allBtn) allBtn.classList.toggle('on', val==='all');
+  buildMonthFilterBtns();
+  // 圖表：單月模式只顯示該月，用長條圖更清楚
+  buildChart();
+  buildCards();
+  // 更新 kpi 面板的達成預覽（如果開著）
+  if(openPanels.has('kpi')) buildKpi();
+}
+function switchTab(t){
+  tab=t;
+  ['visit','deal','both','cold','rate'].forEach(x=>{
+    const el=document.getElementById('tab-'+x);
+    if(el) el.classList.remove('on');
+  });
+  document.getElementById('tab-'+t).classList.add('on');
+  buildChart();
+}
+function switchMode(m){
+  viewMode=m;
+  ['all','exc'].forEach(x=>document.getElementById('mode-'+x).classList.remove('on'));
+  document.getElementById('mode-'+m).classList.add('on');
+  if(openPanels.has('hq'))buildHq();
+  buildCards();buildChart();
+}
+
+const PANEL_CLR={edit:'b',hq:'a',kpi:'p',wkpi:'t',people:'b'};
+function togglePanel(id){
+  const btn=document.getElementById('btn-'+id);
+  const panel=document.getElementById(id+'-panel');
+  if(openPanels.has(id)){
+    openPanels.delete(id);
+    panel.classList.remove('open');
+    btn.classList.remove('on',PANEL_CLR[id]);
+  } else {
+    openPanels.add(id);
+    panel.classList.add('open');
+    btn.classList.add('on',PANEL_CLR[id]);
+    if(id==='edit')   buildEdit();
+    if(id==='hq')    buildHq();
+    if(id==='kpi')   buildKpi();
+    if(id==='wkpi')  buildWkpi();
+    if(id==='people') buildPeoplePanel();
+  }
+}
+
+/* ─────────────── init ─────────────── */
+function updateSub(){
+  const f=S.months[0],l=S.months[S.months.length-1];
+  document.getElementById('psub').textContent=`北區 × 桃區　｜　${f} — ${l}`;
+}
+function refreshAll(){
+  updateSub();
+  buildMonthFilterBtns();
+  // 各面板只在「新增月份」或「面板第一次開啟」時重建
+  // 避免使用者正在輸入時被清除
+  buildCards();buildChart();
+}
+// 完整重建所有面板（只在加月份時用）
+function rebuildAllPanels(){
+  buildMonthFilterBtns(); // 月份按鈕也要更新
+  if(openPanels.has('edit'))   buildEdit();
+  if(openPanels.has('hq'))     buildHq();
+  if(openPanels.has('kpi'))    buildKpi();
+  if(openPanels.has('wkpi'))   buildWkpi();
+  if(openPanels.has('people')) buildPeoplePanel();
+  buildCards();buildChart();
+}
+refreshAll();
+
+/* ─────────────── 業務人員管理 ─────────────── */
+function buildPeoplePanel() {
+  const el = document.getElementById('people-body');
+  if (!el) return;
+  if (S.people.length === 0) {
+    el.innerHTML = '<p style="font-size:12px;color:var(--t3);padding:4px 0 8px;">尚無業務人員</p>';
+    return;
+  }
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:4px;">
+      ${S.people.map((p, i) => `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${COLOR_POOL[i % COLOR_POOL.length]};flex-shrink:0;"></span>
+            <div>
+              <div style="font-size:13px;font-weight:700;">${p.name}</div>
+              <div style="font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;">${p.region === '北' ? '北區' : '桃區'}</div>
+            </div>
+          </div>
+          <button onclick="deletePerson('${p.name}')" class="del-btn" title="刪除此業務">✕</button>
+        </div>
+      `).join('')}
+    </div>
+    <p style="font-size:11px;color:var(--t3);margin-top:8px;">⚠️ 刪除業務後該業務所有資料將一併移除，無法復原。</p>
+  `;
+}
+
+function validateNewPerson() {
+  const nameEl = document.getElementById('new-person-name');
+  const btn = document.getElementById('add-person-btn');
+  const hint = document.getElementById('add-person-hint');
+  const name = nameEl ? nameEl.value.trim() : '';
+  const exists = S.people.some(p => p.name === name);
+  if (!name) {
+    btn.style.opacity = '.4'; btn.style.pointerEvents = 'none';
+    hint.textContent = '';
+  } else if (exists) {
+    btn.style.opacity = '.4'; btn.style.pointerEvents = 'none';
+    hint.textContent = '此姓名已存在';
+  } else {
+    btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+    hint.textContent = '';
+  }
+}
+
+function addPerson() {
+  const nameEl = document.getElementById('new-person-name');
+  const regionEl = document.getElementById('new-person-region');
+  const name = nameEl ? nameEl.value.trim() : '';
+  const region = regionEl ? regionEl.value : '北';
+  if (!name || S.people.some(p => p.name === name)) return;
+
+  const zeros = S.months.map(() => 0);
+  S.people.push({ name, region, visits: [...zeros], deals: [...zeros], cold: [...zeros], coldDeals: [...zeros] });
+  S.hq[name] = [...zeros];
+  // S.kpi 是共用陣列，不需要按人名新增
+  wkpiEnsure(name);
+
+  if (nameEl) nameEl.value = '';
+  validateNewPerson();
+  save();
+  buildPeoplePanel();
+  rebuildAllPanels();
+  buildRegionCards();
+}
+
+function deletePerson(name) {
+  if (!confirm(`確定要刪除「${name}」及其所有資料嗎？此操作無法復原。`)) return;
+  S.people = S.people.filter(p => p.name !== name);
+  delete S.hq[name];
+  delete S.wkpi[name];
+  save();
+  buildPeoplePanel();
+  rebuildAllPanels();
+  buildRegionCards();
+}
+
+/* ─────────────── 動態區域卡片 ─────────────── */
+function buildRegionCards() {
+  // 動態產生所有有業務的區域
+  const regions = [...new Set(S.people.map(p => p.region))];
+  const container = document.getElementById('region-cards-container');
+  if (!container) return;
+  container.innerHTML = regions.map(region => {
+    const label = region === '北' ? '北區' : region === '桃' ? '桃區' : region + '區';
+    const filtered = S.people.filter(p => p.region === region);
+    const rClass = region === '北' ? 'north' : 'south';
+    const cards = filtered.map(p => {
+      const {v,d} = totalAdj(p);
+      const {c,cd} = totalCold(p);
+      const hqArr = S.hq[p.name] || zeros(S.months.length);
+      const hqSum = viewMode==='exc' ? hqArr.reduce((a,b)=>a+b,0) : 0;
+      const badge = (viewMode==='exc' && hqSum>0) ? `<span class="hqb">-${hqArr.join('/')}</span>` : '';
+      const dk = kpiDeal(p);
+      const dkBar = dk ? `
+        <div class="kpi-item">
+          <div class="kpi-header">
+            <div class="kpi-name">成交 KPI（${dk.actual}/${dk.target}）</div>
+            <div class="kpi-val" style="color:${barColor(dk.pct)}">${dk.pct}%</div>
+          </div>
+          <div class="kbar-wrap"><div class="kbar" style="width:${Math.min(dk.pct,100)}%;background:${barColor(dk.pct)}"></div></div>
+        </div>` : '';
+      const wkBars = kpiWeighted(p).filter(x=>x.target>0).map(x=>`
+        <div class="kpi-item">
+          <div class="kpi-header">
+            <div class="kpi-name">${x.name}（${x.actual}/${x.target}）</div>
+            <div class="kpi-val" style="color:${barColor(x.pct)}">${x.pct}%</div>
+          </div>
+          <div class="kbar-wrap"><div class="kbar" style="width:${Math.min(x.pct,100)}%;background:${barColor(x.pct)}"></div></div>
+        </div>`).join('');
+      const kpiSection = (dkBar||wkBars) ? `<div class="kpi-section">${dkBar}${wkBars}</div>` : '';
+      return `<div class="card">
+        <div class="ca" style="background:${getColor(p.name)};"></div>
+        <div class="cn">${p.name}${badge}</div>
+        <div class="cstats">
+          <div class="cs"><div class="csv">${v}</div><div class="csl">來客</div></div>
+          <div class="cs"><div class="csv">${d}</div><div class="csl">成交</div></div>
+          <div class="cs"><div class="csv">${c}</div><div class="csl">陌開</div></div>
+          <div class="cs"><div class="csv">${cd}</div><div class="csl">陌成</div></div>
+        </div>
+        <div class="rates">
+          <span class="cr ${rClass}">成交 ${rate(d,v)}</span>
+          <span class="cr cold">陌生 ${rate(cd,c)}</span>
+        </div>
+        ${kpiSection}
+      </div>`;
+    }).join('');
+    return `
+      <div class="rb">
+        <div class="rh"><div class="rl">${label}</div><div class="rline"></div></div>
+        <div class="cgrid">${cards}</div>
+      </div>`;
+  }).join('');
+}
+
+</script>
+</body>
+</html>
