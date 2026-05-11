@@ -288,11 +288,21 @@ async function fetchAlloc() {
         status: t.section,
       }));
 
+    const makeList = (section) => data.tracking
+      .filter(t => t.section === section)
+      .sort((a,b) => b.daysSince - a.daysSince)
+      .slice(0, 10)
+      .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
+
     final[name] = {
       tracking: data.tracking.length,
       overdue: data.overdue.length,
       statusCount,
       overdueList,
+      possibleHighList: makeList('介紹完考慮中-可能性高'),
+      timeNeededList:   makeList('機會高-需要時間等待'),
+      possibleLowList:  makeList('介紹完考慮中-可能性低'),
+      introList:        makeList('待介紹'),
     };
   });
 
