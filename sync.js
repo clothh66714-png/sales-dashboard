@@ -197,9 +197,9 @@ async function fetchAllocProject(token, projectId, nameMap) {
   const allTasks = [];
 
   for (const sec of trackingSections) {
-    const url = `https://app.asana.com/api/1.0/sections/${sec.gid}/tasks?opt_fields=name,assignee.name,modified_at,created_at&limit=100`;
+    const url = `https://app.asana.com/api/1.0/sections/${sec.gid}/tasks?opt_fields=completed,name,assignee.name,modified_at,created_at&limit=100`;
     const res = await fetchJson(url, { Authorization: `Bearer ${token}` });
-    const tasks = (res.data || []).map(t => ({ ...t, sectionName: sec.name }));
+    const tasks = (res.data || []).filter(t => !t.completed).map(t => ({ ...t, sectionName: sec.name }));
     allTasks.push(...tasks);
     console.log(`  Section「${sec.name}」：${tasks.length} 筆`);
   }
