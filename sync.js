@@ -290,6 +290,8 @@ async function fetchAlloc() {
       }));
 
     const makeList = (section) => data.tracking
+      console.log('makeList section:', JSON.stringify(section), 'tracking sections:', [...new Set(data.tracking.map(t=>t.section))]);
+  return data.tracking
       .filter(t => t.section === section)
       .sort((a,b) => b.daysSince - a.daysSince)
       .slice(0, 10)
