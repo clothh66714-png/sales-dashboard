@@ -174,6 +174,9 @@ const TRACKING_SECTIONS = new Set([
   '內勤追蹤-第一次☝️','內勤追蹤-第二次☝️☝️','未裝機 - 結案關閉'
 ]);
 const DEAL_SECTION = '裝機結案';
+const NON_OVERDUE_SECTIONS = new Set([
+  '裝機結案','內勤追蹤-第一次☝️','內勤追蹤-第二次☝️☝️','未裝機 - 結案關閉'
+]);
 const HALF_YEAR_MS = 180 * 24 * 60 * 60 * 1000;
 const OVERDUE_DAYS = 14; // 超過幾天算逾期
 
@@ -255,7 +258,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
       created_at: task.created_at || null,
     };
     result[name].tracking.push(taskInfo);
-    if (daysSince >= OVERDUE_DAYS) result[name].overdue.push(taskInfo);
+    if (daysSince >= OVERDUE_DAYS && !NON_OVERDUE_SECTIONS.has(task.sectionName)) result[name].overdue.push(taskInfo);
   }
 return { result, dealTasks, allTasks };
 }
