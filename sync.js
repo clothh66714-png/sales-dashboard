@@ -254,7 +254,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
     result[name].tracking.push(taskInfo);
     if (daysSince >= OVERDUE_DAYS) result[name].overdue.push(taskInfo);
   }
-  return result;
+return { result, dealTasks };
 }
 
 async function fetchAlloc() {
@@ -266,13 +266,13 @@ async function fetchAlloc() {
 
   // 同時撈兩個 project
   const results = await Promise.all(
-    projectIds.map(id => fetchAllocProject(token, id, nameMap))
-  );
+  projectIds.map(id => fetchAllocProject(token, id, nameMap))
+);
 
-  // 合併
-  const merged = {};
-  results.forEach(r => {
-    Object.entries(r).forEach(([name, data]) => {
+const allDealTasks = results.flatMap(r => r.dealTasks);
+const merged = {};
+results.forEach(r => {
+  Object.entries(r.result).forEach(([name, data]) => {
       if (!merged[name]) merged[name] = { tracking: [], overdue: [] };
       merged[name].tracking.push(...data.tracking);
       merged[name].overdue.push(...data.overdue);
@@ -280,6 +280,8 @@ async function fetchAlloc() {
   });
 
   // 整理成分配儀表板需要的格式
+  const now = Date.now();
+const halfYearAgo = now - HALF_YEAR_MS;
   const final = {};
   Object.entries(merged).forEach(([name, data]) => {
     // 狀態統計
@@ -304,7 +306,6 @@ async function fetchAlloc() {
   .sort((a,b) => b.daysSince - a.daysSince)
   .slice(0, 10)
   .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
-    const halfYearAgo = now - HALF_YEAR_MS;
     const hqKw = CFG.asana.hqKeywords;
 
     const visitCount = data.tracking.filter(t => {
@@ -312,7 +313,7 @@ async function fetchAlloc() {
       return new Date(t.created_at||0).getTime() >= halfYearAgo;
     }).length;
 
-    const dealCount = dealTasks.filter(t => {
+    const dealCount = allDealTasks.filter(t => {
       const rawName = t.assignee?.name;
       if (!rawName) return false;
       const pName = nameMap[rawName] || Object.entries(nameMap).find(([k])=>rawName.includes(k))?.[1];
