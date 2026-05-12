@@ -250,6 +250,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
       name: task.name || '',
       section: task.sectionName,
       daysSince,
+      created_at: task.created_at || null,
     };
     result[name].tracking.push(taskInfo);
     if (daysSince >= OVERDUE_DAYS) result[name].overdue.push(taskInfo);
