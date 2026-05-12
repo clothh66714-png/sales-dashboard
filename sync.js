@@ -377,6 +377,7 @@ const thisMonthStart = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth
     loc: (t.name||'').slice(0, 30),
     created_at: t.created_at,
   }));
+    const thisMonth = thisMonthList.length;
     const dealRate = visitCount > 0 ? Math.round(dealCount / visitCount * 1000) / 10 : null;
     final[name] = {
       thisMonthList,
