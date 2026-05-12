@@ -290,13 +290,10 @@ async function fetchAlloc() {
       }));
 
     const makeList = (section) => data.tracking
-      console.log('makeList section:', JSON.stringify(section), 'tracking sections:', [...new Set(data.tracking.map(t=>t.section))]);
-  return data.tracking
-      .filter(t => t.section === section)
-      .sort((a,b) => b.daysSince - a.daysSince)
-      .slice(0, 10)
-      .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
-
+  .filter(t => t.section === section)
+  .sort((a,b) => b.daysSince - a.daysSince)
+  .slice(0, 10)
+  .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
     final[name] = {
       tracking: data.tracking.length,
       overdue: data.overdue.length,
