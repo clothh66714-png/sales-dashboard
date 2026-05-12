@@ -194,6 +194,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
   const secUrl = `https://app.asana.com/api/1.0/projects/${projectId}/sections?opt_fields=name`;
   const secRes = await fetchJson(secUrl, { Authorization: `Bearer ${token}` });
   const sections = secRes.data || [];
+  console.log('  Sections:', sections.map(s => s.name).join(' | '));
   const trackingSections = sections.filter(s => TRACKING_SECTIONS.has(s.name));
   const now = Date.now();
   const allTasks = [];
