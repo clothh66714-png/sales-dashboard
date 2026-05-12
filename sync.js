@@ -172,6 +172,8 @@ const TRACKING_SECTIONS = new Set([
   '待介紹','待線上介紹','介紹完考慮中-可能性高','介紹完考慮中-可能性低',
   '機會高-需要時間等待','待裝機'
 ]);
+const DEAL_SECTION = '裝機完成結案';
+const HALF_YEAR_MS = 180 * 24 * 60 * 60 * 1000;
 const OVERDUE_DAYS = 14; // 超過幾天算逾期
 
 async function fetchStories(taskId, token) {
@@ -195,9 +197,17 @@ async function fetchAllocProject(token, projectId, nameMap) {
   const trackingSections = sections.filter(s => TRACKING_SECTIONS.has(s.name));
   const now = Date.now();
   const allTasks = [];
+  // 撈裝機完成結案 section
+  const dealSection = sections.find(s => s.name === DEAL_SECTION);
+  let dealTasks = [];
+  if (dealSection) {
+    const durl = `https://app.asana.com/api/1.0/sections/${dealSection.gid}/tasks?opt_fields=name,assignee.name,due_on&limit=100`;
+    const dres = await fetchJson(durl, { Authorization: `Bearer ${token}` });
+    dealTasks = dres.data || [];
+  }
 
   for (const sec of trackingSections) {
-    const url = `https://app.asana.com/api/1.0/sections/${sec.gid}/tasks?opt_fields=completed,name,assignee.name,modified_at,created_at&limit=100`;
+    const url = `https://app.asana.com/api/1.0/sections/${sec.gid}/tasks?opt_fields=completed,name,assignee.name,modified_at,created_at,due_on&limit=100`
     const res = await fetchJson(url, { Authorization: `Bearer ${token}` });
     const tasks = (res.data || []).filter(t => !t.completed).map(t => ({ ...t, sectionName: sec.name }));
     allTasks.push(...tasks);
@@ -294,6 +304,26 @@ async function fetchAlloc() {
   .sort((a,b) => b.daysSince - a.daysSince)
   .slice(0, 10)
   .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
+    const halfYearAgo = now - HALF_YEAR_MS;
+    const hqKw = CFG.asana.hqKeywords;
+
+    const visitCount = data.tracking.filter(t => {
+      if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
+      return new Date(t.created_at||0).getTime() >= halfYearAgo;
+    }).length;
+
+    const dealCount = dealTasks.filter(t => {
+      const rawName = t.assignee?.name;
+      if (!rawName) return false;
+      const pName = nameMap[rawName] || Object.entries(nameMap).find(([k])=>rawName.includes(k))?.[1];
+      if (pName !== name) return false;
+      if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
+      if (!t.due_on) return false;
+      const due = new Date(t.due_on).getTime();
+      return due >= halfYearAgo && due <= now;
+    }).length;
+
+    const dealRate = visitCount > 0 ? Math.round(dealCount / visitCount * 1000) / 10 : null;
     final[name] = {
       tracking: data.tracking.length,
       overdue: data.overdue.length,
@@ -303,6 +333,9 @@ async function fetchAlloc() {
       timeNeededList:   makeList('機會高-需要時間等待'),
       possibleLowList:  makeList('介紹完考慮中-可能性低'),
       introList:        makeList('待介紹'),
+      visitCount,
+      dealCount,
+      dealRate,
     };
   });
 
