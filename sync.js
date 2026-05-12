@@ -235,6 +235,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
     const lastStr = lastCommentMap[task.gid] || task.modified_at || task.created_at;
     const daysSince = Math.floor((now - new Date(lastStr).getTime()) / 86400000);
     const taskInfo = {
+      gid: task.gid,
       id: task.name?.split('/')[0]?.trim() || task.gid,
       name: task.name || '',
       section: task.sectionName,
