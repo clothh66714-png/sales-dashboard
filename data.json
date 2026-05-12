@@ -1,5 +1,5 @@
 {
-  "syncTime": "2026-05-12T06:27:45.810Z",
+  "syncTime": "2026-05-12T06:34:41.832Z",
   "asana": {
     "Harry": {
       "3月": {
@@ -169,8 +169,8 @@
         "hq": 4
       },
       "5月": {
-        "visits": 129,
-        "hq": 5
+        "visits": 130,
+        "hq": 6
       },
       "7月": {
         "visits": 105,
@@ -484,11 +484,11 @@
   "alloc": {
     "Wei": {
       "thisMonth": 4,
-      "tracking": 29,
+      "tracking": 30,
       "overdue": 17,
       "statusCount": {
         "待線上介紹": 3,
-        "待介紹": 9,
+        "待介紹": 10,
         "機會高-需要時間等待": 12,
         "待裝機": 5
       },
@@ -662,6 +662,12 @@
           "url": "https://app.asana.com/0/1214632750084440/1214632750084440"
         },
         {
+          "id": "26056010",
+          "loc": "26056010/新北市新莊(總部分店)麻辣燙 早到甜早餐分",
+          "days": 0,
+          "url": "https://app.asana.com/0/1214729576922894/1214729576922894"
+        },
+        {
           "id": "26056002",
           "loc": "26056002/台北市中正(Google)人性甜點-郭先生",
           "days": 0,
@@ -674,9 +680,9 @@
           "url": "https://app.asana.com/0/1214668078363887/1214668078363887"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 25,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     },
     "Harry": {
       "thisMonth": 8,
@@ -828,9 +834,9 @@
           "url": "https://app.asana.com/0/1214081869860286/1214081869860286"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 22,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     },
     "Jack": {
       "thisMonth": 7,
@@ -963,9 +969,9 @@
           "url": "https://app.asana.com/0/1214604395784338/1214604395784338"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 18,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     },
     "Ethan/Sales": {
       "thisMonth": 1,
@@ -980,21 +986,21 @@
       "possibleLowList": [],
       "introList": [
         {
+          "id": "26055915",
+          "loc": "26055915/台北市松山（台中北屯介紹）(看到店家使用)",
+          "days": 1,
+          "url": "https://app.asana.com/0/1214576163088643/1214576163088643"
+        },
+        {
           "id": "26045634",
           "loc": "26045634/台中市神岡區(陌生開發)全方位（豐洲店）-",
           "days": 1,
           "url": "https://app.asana.com/0/1214145658751991/1214145658751991"
-        },
-        {
-          "id": "26055915",
-          "loc": "26055915/台北市松山（台中北屯介紹）(看到店家使用)",
-          "days": 0,
-          "url": "https://app.asana.com/0/1214576163088643/1214576163088643"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 2,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     },
     "Johnny": {
       "thisMonth": 7,
@@ -1136,8 +1142,14 @@
         {
           "id": "26055865",
           "loc": "26055865/桃園中壢(看到店家使用)拾旅食-詹祐傑-0",
-          "days": 4,
+          "days": 5,
           "url": "https://app.asana.com/0/1214476932107859/1214476932107859"
+        },
+        {
+          "id": "26045803",
+          "loc": "26045803/桃園龜山(Facebook)鉄男居酒屋-張",
+          "days": 4,
+          "url": "https://app.asana.com/0/1214413223704561/1214413223704561"
         },
         {
           "id": "26045447",
@@ -1150,12 +1162,6 @@
           "loc": "26055854/新竹市未知(Facebook)自然本味-郭",
           "days": 3,
           "url": "https://app.asana.com/0/1214472844797953/1214472844797953"
-        },
-        {
-          "id": "26045803",
-          "loc": "26045803/桃園龜山(Facebook)鉄男居酒屋-張",
-          "days": 3,
-          "url": "https://app.asana.com/0/1214413223704561/1214413223704561"
         },
         {
           "id": "26055912",
@@ -1188,9 +1194,9 @@
           "url": "https://app.asana.com/0/1214472873400575/1214472873400575"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 30,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     },
     "Jason": {
       "thisMonth": 10,
@@ -1299,6 +1305,12 @@
           "url": "https://app.asana.com/0/1214567553085955/1214567553085955"
         },
         {
+          "id": "26055869",
+          "loc": "26055869/桃園楊梅(Facebook)泰弍泰式料理-",
+          "days": 4,
+          "url": "https://app.asana.com/0/1214479597472843/1214479597472843"
+        },
+        {
           "id": "26055927",
           "loc": "26055927/彰化縣(桃園中壢介紹)(Google)阿福",
           "days": 3,
@@ -1315,12 +1327,6 @@
           "loc": "26055939/桃園龜山(Facebook)巧味創意美食-",
           "days": 3,
           "url": "https://app.asana.com/0/1214630423589243/1214630423589243"
-        },
-        {
-          "id": "26055869",
-          "loc": "26055869/桃園楊梅(Facebook)泰弍泰式料理-",
-          "days": 3,
-          "url": "https://app.asana.com/0/1214479597472843/1214479597472843"
         },
         {
           "id": "26055921",
@@ -1341,9 +1347,9 @@
           "url": "https://app.asana.com/0/1214633126676146/1214633126676146"
         }
       ],
-      "visitCount": 0,
+      "visitCount": 18,
       "dealCount": 0,
-      "dealRate": null
+      "dealRate": 0
     }
   }
 }
