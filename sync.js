@@ -201,7 +201,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
   const dealSection = sections.find(s => s.name === DEAL_SECTION);
   let dealTasks = [];
   if (dealSection) {
-    const durl = `https://app.asana.com/api/1.0/sections/${dealSection.gid}/tasks?opt_fields=name,assignee.name,due_on&limit=100`;
+    const durl = `https://app.asana.com/api/1.0/sections/${dealSection.gid}/tasks?opt_fields=name,assignee.name,due_on,created_at&limit=100`;
     const dres = await fetchJson(durl, { Authorization: `Bearer ${token}` });
     dealTasks = dres.data || [];
   }
