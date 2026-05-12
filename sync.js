@@ -347,14 +347,6 @@ const thisMonthStart = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth
   })
 ];
 
-const thisMonth = allTasksForMonth.filter(t => {
-  if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
-  return new Date(t.created_at||0).getTime() >= thisMonthStart.getTime();
-}).length;
-    const visitCount = data.tracking.filter(t => {
-      if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
-      return new Date(t.created_at||0).getTime() >= halfYearAgo;
-    }).length;
 
     const dealCount = allDealTasks.filter(t => {
       const rawName = t.assignee?.name;
@@ -367,8 +359,19 @@ const thisMonth = allTasksForMonth.filter(t => {
       return due >= halfYearAgo && due <= now;
     }).length;
 
+    const thisMonthList = allTasksForMonth
+  .filter(t => {
+    if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
+    return new Date(t.created_at||0).getTime() >= thisMonthStart.getTime();
+  })
+  .map(t => ({
+    id: (t.name||'').split('/')[0]?.trim() || t.gid,
+    loc: (t.name||'').slice(0, 30),
+    created_at: t.created_at,
+  }));
     const dealRate = visitCount > 0 ? Math.round(dealCount / visitCount * 1000) / 10 : null;
     final[name] = {
+      thisMonthList,
       thisMonth,
       tracking: data.tracking.length,
       overdue: data.overdue.length,
