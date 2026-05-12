@@ -1,5 +1,5 @@
 {
-  "syncTime": "2026-05-12T10:04:33.055Z",
+  "syncTime": "2026-05-12T12:30:19.468Z",
   "asana": {
     "Harry": {
       "3月": {
@@ -32,7 +32,7 @@
       },
       "4月": {
         "visits": 187,
-        "hq": 19
+        "hq": 20
       },
       "11月": {
         "visits": 128,
@@ -482,6 +482,6 @@
   },
   "ragic": {},
   "alloc": {
-    "_error": "visitCount is not defined"
+    "_error": "thisMonth is not defined"
   }
 }
