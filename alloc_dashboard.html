@@ -263,7 +263,12 @@ function save(){
   el._t=setTimeout(()=>el.classList.remove('show'),2000);
 }
 
-function score(p){ return p.tracking + (p.overdue * 2); }
+  function score(p){
+  const base = p.tracking + (p.overdue * 2);
+  // 成交率加成：每高出 10% 降 2 分（最多降 10 分）
+  const rateBonus = p.dealRate != null ? Math.min(Math.floor(p.dealRate / 10) * 2, 10) : 0;
+  return Math.max(0, base - rateBonus);
+}
 
 function scoreStyle(s){
   if(s<=25) return {bg:'var(--success-bg)',text:'var(--success-text)'};
@@ -373,6 +378,11 @@ function buildBoards(){
           <div class="score" style="background:${ss.bg};color:${ss.text};">${s}</div>
         </div>
         <div class="stats">
+        ${p.dealRate != null ? `<div style="font-size:11px;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="color:var(--t3);">半年成交率</span>
+          <span style="font-weight:700;font-family:'DM Mono',monospace;color:${p.dealRate>=20?'var(--success-text)':p.dealRate>=10?'var(--warning-text)':'var(--danger-text)'};">${p.dealRate}%</span>
+          <span style="color:var(--t3);font-size:10px;">${p.dealCount}成交 / ${p.visitCount}來客</span>
+        </div>` : ''}
           <div class="st"><div class="sv" style="color:var(--info-text);">${p.thisMonth}</div><div class="sl">本月已分配</div></div>
           <div class="st"><div class="sv">${p.tracking}</div><div class="sl">追蹤中</div></div>
           <div class="st"><div class="sv" style="color:var(--danger-text);">▲${p.overdue}</div><div class="sl">逾期</div></div>
@@ -471,6 +481,9 @@ async function syncFromDataJson(){
       p.timeNeededList   = info.timeNeededList   || [];
       p.possibleLowList  = info.possibleLowList  || [];
       p.introList        = info.introList        || [];
+      p.visitCount = info.visitCount || 0;
+      p.dealCount  = info.dealCount  || 0;
+      p.dealRate   = info.dealRate   ?? null;
     });
 
     save(); buildBoards(); updateTopBar(data.syncTime);
