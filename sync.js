@@ -307,6 +307,14 @@ const halfYearAgo = now - HALF_YEAR_MS;
   .slice(0, 10)
   .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
     const hqKw = CFG.asana.hqKeywords;
+    const thisMonthStart = new Date();
+thisMonthStart.setDate(1);
+thisMonthStart.setHours(0,0,0,0);
+
+const thisMonth = data.tracking.filter(t => {
+  if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
+  return new Date(t.created_at||0).getTime() >= thisMonthStart.getTime();
+}).length;
 
     const visitCount = data.tracking.filter(t => {
       if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
@@ -326,6 +334,7 @@ const halfYearAgo = now - HALF_YEAR_MS;
 
     const dealRate = visitCount > 0 ? Math.round(dealCount / visitCount * 1000) / 10 : null;
     final[name] = {
+      thisMonth,
       tracking: data.tracking.length,
       overdue: data.overdue.length,
       statusCount,
