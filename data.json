@@ -1,5 +1,5 @@
 {
-  "syncTime": "2026-05-11T17:58:57.469Z",
+  "syncTime": "2026-05-12T01:52:03.407Z",
   "asana": {
     "Harry": {
       "3月": {
@@ -78,7 +78,7 @@
       },
       "2月": {
         "visits": 31,
-        "hq": 3
+        "hq": 2
       },
       "8月": {
         "visits": 44,
@@ -483,11 +483,11 @@
   "ragic": {},
   "alloc": {
     "Wei": {
-      "tracking": 30,
+      "tracking": 29,
       "overdue": 18,
       "statusCount": {
         "待線上介紹": 2,
-        "待介紹": 11,
+        "待介紹": 10,
         "機會高-需要時間等待": 12,
         "待裝機": 5
       },
@@ -519,7 +519,7 @@
         {
           "id": "26024540",
           "loc": "26024540/台北市(Google)紅九九股份有限公司-",
-          "days": 49,
+          "days": 50,
           "status": "機會高-需要時間等待"
         },
         {
@@ -543,13 +543,13 @@
         {
           "id": "26034846",
           "loc": "26034846/基隆市七堵(朋友/客戶介紹)大波蘿早餐店-",
-          "days": 31,
+          "days": 32,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "26014179",
           "loc": "26014179/台北市中山(Facebook)京都御握丸-",
-          "days": 31,
+          "days": 32,
           "status": "待裝機"
         }
       ],
@@ -582,7 +582,7 @@
         {
           "id": "26024540",
           "loc": "26024540/台北市(Google)紅九九股份有限公司-",
-          "days": 49,
+          "days": 50,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -606,7 +606,7 @@
         {
           "id": "26034846",
           "loc": "26034846/基隆市七堵(朋友/客戶介紹)大波蘿早餐店-",
-          "days": 31,
+          "days": 32,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -621,7 +621,7 @@
         {
           "id": "26045408",
           "loc": "26045408/新北市板橋(Facebook)魔力伊購-張",
-          "days": 19,
+          "days": 20,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -661,12 +661,6 @@
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
-          "id": "26055949",
-          "loc": "26055949/新北市三重(Facebook)沙拉煎餅-蕭",
-          "days": 3,
-          "url": "https://app.asana.com/0/undefined/undefined"
-        },
-        {
           "id": "26055946",
           "loc": "26055946/台北市北投(Facebook)逐日有限公司",
           "days": 3,
@@ -675,6 +669,12 @@
         {
           "id": "26055977",
           "loc": "26055977/新北市永和(Facebook)貓夢工作室-",
+          "days": 0,
+          "url": "https://app.asana.com/0/undefined/undefined"
+        },
+        {
+          "id": "26055973",
+          "loc": "26055973/台北市松山(總部分店)三媽臭臭鍋 南京店-",
           "days": 0,
           "url": "https://app.asana.com/0/undefined/undefined"
         }
@@ -697,16 +697,22 @@
           "status": "機會高-需要時間等待"
         },
         {
+          "id": "26045477",
+          "loc": "26045477/宜蘭縣未知(Facebook)薑母鴨-曾智",
+          "days": 25,
+          "status": "機會高-需要時間等待"
+        },
+        {
           "id": "26034974",
           "loc": "26034974/新北中和(Google)呷午·板南-左先生",
           "days": 24,
           "status": "機會高-需要時間等待"
         },
         {
-          "id": "26045477",
-          "loc": "26045477/宜蘭縣未知(Facebook)薑母鴨-曾智",
-          "days": 24,
-          "status": "機會高-需要時間等待"
+          "id": "26045497",
+          "loc": "26045497/新北市三重(Google)九品冰菓室-林姿",
+          "days": 22,
+          "status": "待介紹"
         },
         {
           "id": "26045595",
@@ -717,12 +723,6 @@
         {
           "id": "26045561",
           "loc": "26045561/台北市中山區(Google)大倉久和大飯店",
-          "days": 21,
-          "status": "待介紹"
-        },
-        {
-          "id": "26045497",
-          "loc": "26045497/新北市三重(Google)九品冰菓室-林姿",
           "days": 21,
           "status": "待介紹"
         },
@@ -742,14 +742,14 @@
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
-          "id": "26034974",
-          "loc": "26034974/新北中和(Google)呷午·板南-左先生",
-          "days": 24,
+          "id": "26045477",
+          "loc": "26045477/宜蘭縣未知(Facebook)薑母鴨-曾智",
+          "days": 25,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
-          "id": "26045477",
-          "loc": "26045477/宜蘭縣未知(Facebook)薑母鴨-曾智",
+          "id": "26034974",
+          "loc": "26034974/新北中和(Google)呷午·板南-左先生",
           "days": 24,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
@@ -762,25 +762,25 @@
         {
           "id": "26045665",
           "loc": "26045665/新北市三重(Facebook)蒸蒸日饗-陳",
-          "days": 12,
+          "days": 13,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26045687",
           "loc": "26045687/新北市新莊(Google)秋好食串燒餐酒館",
-          "days": 12,
+          "days": 13,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26045709",
           "loc": "26045709/新北市(Google)海日子-倪顗璿-09",
-          "days": 12,
+          "days": 13,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26045551",
           "loc": "26045551/新北市三重(Google)微醺早餐店-杜先",
-          "days": 12,
+          "days": 13,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -790,23 +790,23 @@
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
-          "id": "26055867",
-          "loc": "26055867/花蓮縣(看到店家使用)早餐店-洪先生-09",
-          "days": 0,
+          "id": "26045777",
+          "loc": "26045777/新北市板橋(Google)啊就雞蛋糕-黃小",
+          "days": 1,
           "url": "https://app.asana.com/0/undefined/undefined"
         }
       ],
       "possibleLowList": [],
       "introList": [
         {
-          "id": "26045561",
-          "loc": "26045561/台北市中山區(Google)大倉久和大飯店",
-          "days": 21,
+          "id": "26045497",
+          "loc": "26045497/新北市三重(Google)九品冰菓室-林姿",
+          "days": 22,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
-          "id": "26045497",
-          "loc": "26045497/新北市三重(Google)九品冰菓室-林姿",
+          "id": "26045561",
+          "loc": "26045561/台北市中山區(Google)大倉久和大飯店",
           "days": 21,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
@@ -872,7 +872,7 @@
         {
           "id": "26045496",
           "loc": "26045496/新北市(Google)The Stella",
-          "days": 24,
+          "days": 25,
           "status": "機會高-需要時間等待"
         },
         {
@@ -899,7 +899,7 @@
         {
           "id": "26045496",
           "loc": "26045496/新北市(Google)The Stella",
-          "days": 24,
+          "days": 25,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -1017,7 +1017,7 @@
         {
           "id": "26035047",
           "loc": "26035047/桃園八德(Google)玖窩居家-鈕小姐-",
-          "days": 52,
+          "days": 53,
           "status": "機會高-需要時間等待"
         },
         {
@@ -1047,25 +1047,25 @@
         {
           "id": "26024645",
           "loc": "26024645/桃園龜山(Google)小飯桌-蕭珣羽-0",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "26035148",
           "loc": "26035148/桃園市八德(Facebook)貓咖-劉先生",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "26024508",
           "loc": "26024508/桃園桃園(Google)華爾道夫社區-陳永",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "26024523",
           "loc": "26024523/桃園市桃園(Google)昭揚天鋭社區大樓",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         }
       ],
@@ -1074,7 +1074,7 @@
         {
           "id": "26035047",
           "loc": "26035047/桃園八德(Google)玖窩居家-鈕小姐-",
-          "days": 52,
+          "days": 53,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -1104,25 +1104,25 @@
         {
           "id": "26024645",
           "loc": "26024645/桃園龜山(Google)小飯桌-蕭珣羽-0",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26035148",
           "loc": "26035148/桃園市八德(Facebook)貓咖-劉先生",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26024508",
           "loc": "26024508/桃園桃園(Google)華爾道夫社區-陳永",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26024523",
           "loc": "26024523/桃園市桃園(Google)昭揚天鋭社區大樓",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -1147,6 +1147,12 @@
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
+          "id": "26045447",
+          "loc": "26045447/新竹竹北(Google)未知-張競-096",
+          "days": 4,
+          "url": "https://app.asana.com/0/undefined/undefined"
+        },
+        {
           "id": "26055854",
           "loc": "26055854/新竹市未知(Facebook)自然本味-郭",
           "days": 3,
@@ -1155,12 +1161,6 @@
         {
           "id": "26045803",
           "loc": "26045803/桃園龜山(Facebook)鉄男居酒屋-張",
-          "days": 3,
-          "url": "https://app.asana.com/0/undefined/undefined"
-        },
-        {
-          "id": "26045447",
-          "loc": "26045447/新竹竹北(Google)未知-張競-096",
           "days": 3,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
@@ -1214,7 +1214,7 @@
         {
           "id": "26045422",
           "loc": "26045422/新竹竹北(Google)越式料理-陳先生-",
-          "days": 24,
+          "days": 25,
           "status": "機會高-需要時間等待"
         },
         {
@@ -1232,19 +1232,19 @@
         {
           "id": "26045493",
           "loc": "26045493/新竹竹東(Google)日式小吃-羅國聘-",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "26035013",
           "loc": "26035013/新竹北區(Facebook)比夫努逗-常小",
-          "days": 17,
+          "days": 18,
           "status": "機會高-需要時間等待"
         },
         {
           "id": "25040839",
           "loc": "25040839/新竹竹北(Google)餐盒-羅先生-09",
-          "days": 17,
+          "days": 18,
           "status": "待裝機"
         }
       ],
@@ -1259,19 +1259,19 @@
         {
           "id": "26045422",
           "loc": "26045422/新竹竹北(Google)越式料理-陳先生-",
-          "days": 24,
+          "days": 25,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26045493",
           "loc": "26045493/新竹竹東(Google)日式小吃-羅國聘-",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
           "id": "26035013",
           "loc": "26035013/新竹北區(Facebook)比夫努逗-常小",
-          "days": 17,
+          "days": 18,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
@@ -1296,6 +1296,12 @@
           "url": "https://app.asana.com/0/undefined/undefined"
         },
         {
+          "id": "26055907",
+          "loc": "26055907/新竹北區(Facebook)可點可麗餅-新",
+          "days": 4,
+          "url": "https://app.asana.com/0/undefined/undefined"
+        },
+        {
           "id": "26055927",
           "loc": "26055927/彰化縣(桃園中壢介紹)(Google)阿福",
           "days": 3,
@@ -1310,12 +1316,6 @@
         {
           "id": "26055939",
           "loc": "26055939/桃園龜山(Facebook)巧味創意美食-",
-          "days": 3,
-          "url": "https://app.asana.com/0/undefined/undefined"
-        },
-        {
-          "id": "26055907",
-          "loc": "26055907/新竹北區(Facebook)可點可麗餅-新",
           "days": 3,
           "url": "https://app.asana.com/0/undefined/undefined"
         },
