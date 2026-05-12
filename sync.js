@@ -254,7 +254,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
     result[name].tracking.push(taskInfo);
     if (daysSince >= OVERDUE_DAYS) result[name].overdue.push(taskInfo);
   }
-return { result, dealTasks };
+return { result, dealTasks, allTasks };
 }
 
 async function fetchAlloc() {
@@ -270,6 +270,16 @@ async function fetchAlloc() {
 );
 
 const allDealTasks = results.flatMap(r => r.dealTasks);
+  const allTasksMap = {};
+results.forEach(r => {
+  r.allTasks.forEach(t => {
+    const rawName = t.assignee?.name;
+    if (!rawName) return;
+    const name = nameMap[rawName] || Object.entries(nameMap).find(([k]) => rawName.includes(k))?.[1] || rawName;
+    if (!allTasksMap[name]) allTasksMap[name] = [];
+    allTasksMap[name].push(t);
+  });
+});
 const merged = {};
 results.forEach(r => {
   Object.entries(r.result).forEach(([name, data]) => {
@@ -310,7 +320,7 @@ const halfYearAgo = now - HALF_YEAR_MS;
     const now2 = new Date();
 const thisMonthStart = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth(), 1));
 
-const thisMonth =allTasks.filter(t => {
+const thisMonth = (allTasksMap[name] || []).filter(t => {
   if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
   return new Date(t.created_at||0).getTime() >= thisMonthStart.getTime();
 }).length;
