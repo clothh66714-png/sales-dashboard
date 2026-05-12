@@ -453,10 +453,11 @@ async function syncFromDataJson(){
     if(!data.alloc || data.alloc._error) return;
 
     Object.entries(data.alloc).forEach(([asanaName, info])=>{
-      const p = people.find(x =>
-        asanaName.includes(x.name.split('/')[0].trim()) ||
-        x.name.includes(asanaName.split('/')[0].trim())
-      );
+      const p = people.find(x => {
+  const a = asanaName.toLowerCase();
+  const b = x.name.split('/')[0].trim().toLowerCase();
+  return a.includes(b) || b.includes(a.split('/')[0].trim());
+});
       if(!p) return;
       p.tracking = info.tracking || 0;
       p.overdue  = info.overdue  || 0;
