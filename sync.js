@@ -199,6 +199,17 @@ async function fetchAllocProject(token, projectId, nameMap) {
   const secRes = await fetchJson(secUrl, { Authorization: `Bearer ${token}` });
   const sections = secRes.data || [];
   console.log('  Sections:', sections.map(s => s.name).join(' | '));
+  // 撈本月所有任務（用於計算 thisMonth）
+let allProjectTasks = [];
+let ptOffset = '';
+while (true) {
+  const ptUrl = `https://app.asana.com/api/1.0/projects/${projectId}/tasks`
+    + `?opt_fields=name,assignee.name,created_at&limit=100`
+    + (ptOffset ? `&offset=${ptOffset}` : '');
+  const ptRes = await fetchJson(ptUrl, { Authorization: `Bearer ${token}` });
+  allProjectTasks = allProjectTasks.concat(ptRes.data || []);
+  if (ptRes.next_page?.offset) { ptOffset = ptRes.next_page.offset; } else break;
+}
   const trackingSections = sections.filter(s => TRACKING_SECTIONS.has(s.name));
   const now = Date.now();
   const allTasks = [];
@@ -260,7 +271,7 @@ async function fetchAllocProject(token, projectId, nameMap) {
     result[name].tracking.push(taskInfo);
     if (daysSince >= OVERDUE_DAYS && !NON_OVERDUE_SECTIONS.has(task.sectionName)) result[name].overdue.push(taskInfo);
   }
-return { result, dealTasks, allTasks };
+return { result, dealTasks, allTasks, allProjectTasks };
 }
 
 async function fetchAlloc() {
@@ -278,7 +289,7 @@ async function fetchAlloc() {
 const allDealTasks = results.flatMap(r => r.dealTasks);
   const allTasksMap = {};
 results.forEach(r => {
-  r.allTasks.forEach(t => {
+r.allProjectTasks.forEach(t => {
     const rawName = t.assignee?.name;
     if (!rawName) return;
     const name = nameMap[rawName] || Object.entries(nameMap).find(([k]) => rawName.includes(k))?.[1] || rawName;
