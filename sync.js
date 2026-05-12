@@ -301,8 +301,12 @@ const merged = {};
 results.forEach(r => {
   Object.entries(r.result).forEach(([name, data]) => {
       if (!merged[name]) merged[name] = { tracking: [], overdue: [] };
-      merged[name].tracking.push(...data.tracking);
-      merged[name].overdue.push(...data.overdue);
+    data.tracking.forEach(t => {
+      if (!merged[name].tracking.some(x => x.gid === t.gid)) merged[name].tracking.push(t);
+});
+    data.overdue.forEach(t => {
+      if (!merged[name].overdue.some(x => x.gid === t.gid)) merged[name].overdue.push(t);
+});
     });
   });
 
