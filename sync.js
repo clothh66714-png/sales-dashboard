@@ -320,11 +320,20 @@ const halfYearAgo = now - HALF_YEAR_MS;
     const now2 = new Date();
 const thisMonthStart = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth(), 1));
 
-const thisMonth = (allTasksMap[name] || []).filter(t => {
+    const allTasksForMonth = [
+  ...(allTasksMap[name] || []),
+  ...allDealTasks.filter(t => {
+    const rawName = t.assignee?.name;
+    if (!rawName) return false;
+    const pName = nameMap[rawName] || Object.entries(nameMap).find(([k]) => rawName.includes(k))?.[1];
+    return pName === name;
+  })
+];
+
+const thisMonth = allTasksForMonth.filter(t => {
   if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
   return new Date(t.created_at||0).getTime() >= thisMonthStart.getTime();
 }).length;
-
     const visitCount = data.tracking.filter(t => {
       if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
       return new Date(t.created_at||0).getTime() >= halfYearAgo;
