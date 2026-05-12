@@ -1,5 +1,5 @@
 {
-  "syncTime": "2026-05-12T03:42:32.210Z",
+  "syncTime": "2026-05-12T05:05:48.894Z",
   "asana": {
     "Harry": {
       "3月": {
@@ -483,6 +483,7 @@
   "ragic": {},
   "alloc": {
     "Wei": {
+      "thisMonth": 0,
       "tracking": 30,
       "overdue": 18,
       "statusCount": {
@@ -684,6 +685,7 @@
       "dealRate": null
     },
     "Harry": {
+      "thisMonth": 0,
       "tracking": 23,
       "overdue": 4,
       "statusCount": {
@@ -837,6 +839,7 @@
       "dealRate": null
     },
     "Jack": {
+      "thisMonth": 0,
       "tracking": 18,
       "overdue": 4,
       "statusCount": {
@@ -971,6 +974,7 @@
       "dealRate": null
     },
     "Ethan/Sales": {
+      "thisMonth": 0,
       "tracking": 2,
       "overdue": 0,
       "statusCount": {
@@ -999,6 +1003,7 @@
       "dealRate": null
     },
     "Johnny": {
+      "thisMonth": 0,
       "tracking": 32,
       "overdue": 9,
       "statusCount": {
@@ -1194,6 +1199,7 @@
       "dealRate": null
     },
     "Jason": {
+      "thisMonth": 0,
       "tracking": 19,
       "overdue": 7,
       "statusCount": {
