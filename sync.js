@@ -338,6 +338,10 @@ const halfYearAgo = now - HALF_YEAR_MS;
   .slice(0, 10)
   .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
     const hqKw = CFG.asana.hqKeywords;
+    const visitCount = (allTasksMap[name] || []).filter(t => {
+  if (hqKw.some(kw => (t.name||'').includes(kw))) return false;
+  return new Date(t.created_at||0).getTime() >= halfYearAgo;
+}).length;
     const now2 = new Date();
 const thisMonthStart = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth(), 1));
 
