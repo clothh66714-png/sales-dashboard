@@ -230,10 +230,12 @@ while (true) {
     console.log(`  Section「${sec.name}」：${tasks.length} 筆`);
   }
 
-  // 候選逾期 task（modified_at > 10天）批次查留言，最多 80 筆
+  // 候選逾期 task（modified_at > 10天）批次查留言
+  // 移除 .slice(0, 80) 限制，讓所有候選任務都能取得正確的留言時間
   const candidates = allTasks
-    .filter(t => Math.floor((now - new Date(t.modified_at || t.created_at).getTime()) / 86400000) >= 10)
-    .slice(0, 80);
+    .filter(t => Math.floor((now - new Date(t.modified_at || t.created_at).getTime()) / 86400000) >= 10);
+
+  console.log(`  候選逾期任務數：${candidates.length}`);
 
   const lastCommentMap = {};
   for (let i = 0; i < candidates.length; i += 5) {
@@ -321,10 +323,9 @@ const halfYearAgo = now - HALF_YEAR_MS;
       statusCount[t.section] = (statusCount[t.section] || 0) + 1;
     });
 
-    // 逾期列表（最多顯示 10 筆，依天數降序）
+    // 逾期列表（全部列出，依天數降序）
     const overdueList = data.overdue
       .sort((a, b) => b.daysSince - a.daysSince)
-      .slice(0, 10)
       .map(t => ({
         id: t.id,
         loc: t.name.slice(0, 30),
@@ -332,10 +333,10 @@ const halfYearAgo = now - HALF_YEAR_MS;
         status: t.section,
       }));
 
+    // 各狀態清單（全部列出，依天數降序）
     const makeList = (section) => data.tracking
   .filter(t => t.section === section)
   .sort((a,b) => b.daysSince - a.daysSince)
-  .slice(0, 10)
   .map(t => ({ id: t.id, loc: t.name.slice(0, 30), days: t.daysSince, url: `https://app.asana.com/0/${t.gid}/${t.gid}` }));
     const hqKw = CFG.asana.hqKeywords;
     const visitCount = (allTasksMap[name] || []).filter(t => {
